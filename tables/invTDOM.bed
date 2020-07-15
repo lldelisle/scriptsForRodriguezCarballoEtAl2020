@@ -1,0 +1,3 @@
+track type=bed name=invTDOM
+chr2	74768574	74768575	leftBoundary
+chr2	75656701	75656702	rightBoundary
