@@ -10,9 +10,10 @@
 #SBATCH --time 24:00:00
 #SBATCH --job-name getDemultiplexed
 
+FourCAnalysis=$1
 gitHubDirectory=$1
 
-wd="$PWD/analysisRodriguezCarballo2020/"
+wd="$PWD/${FourCAnalysis}/"
 
 module purge
 module load sra-toolkit/2.9.6
@@ -53,7 +54,8 @@ mv *invTDOM*.fastq invTDOM/
 # All other are mapped on mm10
 mv *.fastq Wt/
 
-# One is mapped on both
-if [ -e invTDOM/E9_FLB_invTDOM_Hoxd11.fastq ]; then
-  cp invTDOM/E9_FLB_invTDOM_Hoxd11.fastq Wt/
-fi
+# All E9 invTDOM mapped on both
+for f in invTDOM/E9*_invTDOM_*.fastq; do
+  newName=`basename $f | awk '{gsub("invTDOM", "invTDOM_onwt", $1); print}'`
+  cp $f Wt/${newName}
+done

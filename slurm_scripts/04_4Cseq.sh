@@ -11,9 +11,9 @@
 #SBATCH --time 12:00:00
 #SBATCH --job-name 4C
 
-gitHubDirectory=$1
+desc=$1
+gitHubDirectory=$2
 
-desc="analysisRodriguezCarballo2020"
 pathWithInstall="$PWD/"
 wd="${pathWithInstall}/${desc}"
 pathForScripts="${gitHubDirectory}/scripts/"
@@ -72,15 +72,11 @@ ${pathForScripts}/parse_output.sh 4cseq_minilims ${desc} res_files_4Cseq_${name}
 mkdir -p toGEO
 for f in res_files_4Cseq_${name}/*_norm_smoothed_11FragsPerWin.bedGraph.gz; do
   sample=`basename $f _norm_smoothed_11FragsPerWin.bedGraph.gz | awk '{gsub("segToFrag_", "", $1); print $1}'`
-  if [ $sample = E9_FLB_invTDOM_Hoxd11 ] && [[ ${name} == "Wt"* ]]; then
-    cp $f toGEO/E9_FLB_invTDOM_Hoxd11_onwt.bedGraph.gz
-  else
-    cp $f toGEO/${sample}.bedGraph.gz
-  fi
+  cp $f toGEO/${sample}.bedGraph.gz
 done
 for f in `ls res_files_4Cseq_${name}/segToFrag_*.bw | grep -v rep`; do
   sample=`basename $f .bw | awk '{gsub("segToFrag_", "", $1); print $1}'`
-  if [ $sample = E9_FLB_invTDOM_Hoxd11 ] && [[ ${name} == "Wt"* ]]; then
+  if [[ $sample == *"_invTDOM_"* ]] && [[ ${name} == "Wt"* ]]; then
     :
   else
     cp $f toGEO/segToFrag_${sample}.bw

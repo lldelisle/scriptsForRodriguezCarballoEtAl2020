@@ -31,12 +31,11 @@ Rscript ${pathForScripts}/correlations.R $plotDirectory
 
 # We store the matrix of distance in a cool file
 # We use a conda environment with cooler:
-exists=`conda info --envs | awk '$1=="pgt_rc2020"{print}' | wc -l`
+exists=`conda info --envs | awk '$1=="pgt_3.5"{print}' | wc -l`
 if [ $exists -ne 1 ]; then
-  conda env create -f ${pathForScripts}/environment.yml
-  
+  conda env create -n pgt_3.5 pygenometracks=3.5  
 fi
-conda activate pgt_rc2020
+conda activate pgt_3.5
 
 for f in average__*; do
   echo $f

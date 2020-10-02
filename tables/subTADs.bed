@@ -1,0 +1,3 @@
+track type=bed name=subTADs
+chr2	74768600	75133816	subTAD1(noCS38-40)
+chr2	75153815	75604841	subTAD2(noCS38-40)

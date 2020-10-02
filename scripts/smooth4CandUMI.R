@@ -1,5 +1,4 @@
 options(scipen=999)
-options(scipen=999)
 options(stringsAsFactors=F)
 if (!"devtools" %in% installed.packages()){
   install.packages("devtools", repos = "https://stat.ethz.ch/CRAN/")
@@ -7,6 +6,7 @@ if (!"devtools" %in% installed.packages()){
 devtools::install_github("lldelisle/usefulLDfunctions")
 library(usefulLDfunctions)
 rm(list=ls())
+
 ###### Install missing packages and load them ######
 safelyLoadAPackageInCRANorBioconductor("zoo")
 
@@ -116,7 +116,7 @@ if (length(missingInputMat) > 0){
 
 ##############
 matrices <- list.files(folderWithInputs, ".inputMat$")
-if (length(matrices) > 1){
+if (length(matrices) >= 1){
   ###Check the analysis required parameters####
   # For each matrix we should find the vp position
   colnames(vpPosDF) <- c("name", "pos")

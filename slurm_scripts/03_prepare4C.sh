@@ -10,8 +10,9 @@
 #SBATCH --time 1:00:00
 #SBATCH --job-name pre4C
 
-gitHubDirectory=$1
-pathWithMutantGenome=$2
+desc=$1
+gitHubDirectory=$2
+pathWithMutantGenome=$3
 
 pathWithInstall="$PWD/"
 pathWithTableWithGenomes="${gitHubDirectory}/tables/table.txt"
@@ -19,7 +20,6 @@ pathForScripts="${gitHubDirectory}/scripts/"
 pathWithBRFiles="${gitHubDirectory}/tables/"
 pathWithtemplate4cfile="${gitHubDirectory}/tables/template_4cfile.fa"
 
-desc="analysisRodriguezCarballo2020"
 
 module purge
 module load gcc/7.4.0

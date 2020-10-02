@@ -11,12 +11,13 @@
 #SBATCH --time 24:00:00
 #SBATCH --job-name mapping
 
-gitHubDirectory=$1
-pathWithMutantGenome=$2
+FourCAnalysis=$1
+gitHubDirectory=$2
+pathWithMutantGenome=$3
 
 pathWithInstall="$PWD/"
 # The working directory is where you have all demultiplexed fastqs
-wd="${pathWithInstall}/analysisRodriguezCarballo2020/"
+wd="${pathWithInstall}/${FourCAnalysis}/"
 pathWithTableWithGenomes="${gitHubDirectory}/tables/table.txt"
 pathForScripts="${gitHubDirectory}/scripts/"
 
@@ -123,3 +124,11 @@ if [ ! -e ${pathForScripts}/parse_output.sh ]; then
   exit 1
 fi
 ${pathForScripts}/parse_output.sh mapseq_minilims ${desc} res_files_mapping_${genome}
+
+# Extract mapping rate:
+if [ ! -e ${pathForScripts}/getMappingRate.py ]; then
+  echo "${pathForScripts}/getMappingRate.py does not exists"
+  exit 1
+fi
+python ${pathForScripts}/getMappingRate.py --directory res_files_mapping_${genome} \
+  --output res_files_mapping_${genome}/my_summary.txt

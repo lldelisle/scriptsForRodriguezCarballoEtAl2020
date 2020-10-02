@@ -30,8 +30,18 @@ def build_cool(input_bedgraph, frag_per_bin, pixels_file, output_file):
     # We only keep upper corner
     pixels = pixels[pixels.bin1_id <= pixels.bin2_id]
 
+    # We need to add a pixel starting at 0 to be 'real' cool file:
+    new_coos = pd.DataFrame({'chrom':[data['chrom'][0]],
+                             'start':[0],
+                             'end':[data['start'][0]]},
+                             columns=['chrom', 'start', 'end']).append(new_df, ignore_index=True)
+
+    # We need to update the bins_id in the pixels:
+    pixels['bin1_id'] +=1
+    pixels['bin2_id'] +=1
+
     # We create the cool file
-    cooler.create_cooler(output_file, new_df, pixels)
+    cooler.create_cooler(output_file, new_coos, pixels)
 
 
 argp = argparse.ArgumentParser(

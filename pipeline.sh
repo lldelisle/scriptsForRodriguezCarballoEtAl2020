@@ -7,6 +7,7 @@ FourCinRootDirectory="/scratch/ldelisle/all4Cin/"
 plotDirectory="/scratch/ldelisle/RC_2020/"
 # The pathForChIP should contain the bedgraph from GEO of the ChIP
 pathForChIP="/scratch/ldelisle/ChIP/"
+FourCAnalysis="analysisRodriguezCarballo2020"
 
 # Define the iterations of 4Cin
 exclusions="0 1 2 3"
@@ -93,22 +94,22 @@ done
 jidMakeGenome=$(sbatch --chdir $mutantGenomeDirectory $gitHubDirectory/slurm_scripts/00_makeGenomeFor4CHTS.sh $gitHubDirectory | awk '{print $NF}')
 
 # Get fastq from sra
-jidGetFastq=$(sbatch --chdir $FourCDirectory $gitHubDirectory/slurm_scripts/01_getDemultiplexedFastq.sh $gitHubDirectory | awk '{print $NF}')
+jidGetFastq=$(sbatch --chdir $FourCDirectory $gitHubDirectory/slurm_scripts/01_getDemultiplexedFastq.sh $FourCAnalysis $gitHubDirectory | awk '{print $NF}')
 
 # Launch the mapping
-jidMapping4C=$(sbatch --chdir $FourCDirectory --dependency afterok:${jidMakeGenome},${jidGetFastq} $gitHubDirectory/slurm_scripts/02_mapping.sh  $gitHubDirectory $mutantGenomeDirectory | awk '{print $NF}')
+jidMapping4C=$(sbatch --chdir $FourCDirectory --dependency afterok:${jidMakeGenome},${jidGetFastq} $gitHubDirectory/slurm_scripts/02_mapping.sh $FourCAnalysis $gitHubDirectory $mutantGenomeDirectory | awk '{print $NF}')
 
 # Prepare all files for the 4C
-jidpre4C=$(sbatch --chdir $FourCDirectory --dependency afterok:${jidMapping4C} $gitHubDirectory/slurm_scripts/03_prepare4C.sh  $gitHubDirectory $mutantGenomeDirectory | awk '{print $NF}')
+jidpre4C=$(sbatch --chdir $FourCDirectory --dependency afterok:${jidMapping4C} $gitHubDirectory/slurm_scripts/03_prepare4C.sh $FourCAnalysis $gitHubDirectory $mutantGenomeDirectory | awk '{print $NF}')
 
 # Launch the 4C
-jid4C=$(sbatch --chdir $FourCDirectory --dependency afterok:${jidpre4C} $gitHubDirectory/slurm_scripts/04_4Cseq.sh  $gitHubDirectory | awk '{print $NF}')
+jid4C=$(sbatch --chdir $FourCDirectory --dependency afterok:${jidpre4C} $gitHubDirectory/slurm_scripts/04_4Cseq.sh $FourCAnalysis $gitHubDirectory | awk '{print $NF}')
 
 jid4Cins=""
 
 # Launch all 4Cin
 for exclusion in ${exclusions}; do
-  jidpre4Cin=$(sbatch --chdir ${FourCinRootDirectory}4Cin_${exclusion}kb --dependency afterok:${jid4C} $gitHubDirectory/slurm_scripts/05_prepare4Cin_smooth.sh  $gitHubDirectory $FourCDirectory $exclusion | awk '{print $NF}')
+  jidpre4Cin=$(sbatch --chdir ${FourCinRootDirectory}4Cin_${exclusion}kb --dependency afterok:${jid4C} $gitHubDirectory/slurm_scripts/05_prepare4Cin_smooth.sh  $gitHubDirectory ${FourCDirectory}/${FourCAnalysis} $exclusion | awk '{print $NF}')
   for letter in ${letters}; do
     jid4Cin=$(sbatch --chdir ${FourCinRootDirectory}4Cin_${exclusion}kb${letter} --dependency afterok:${jidpre4Cin} $gitHubDirectory/slurm_scripts/06_4Cin.sh  $gitHubDirectory | awk '{print $NF}')
     if [ -z $jid4Cins ]; then

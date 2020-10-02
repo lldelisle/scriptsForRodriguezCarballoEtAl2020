@@ -13,7 +13,7 @@
 #SBATCH --job-name pre4Cin
 
 gitHubDirectory=$1
-FourCDirectory=$2
+pathWithResultsOf4C=$2
 distanceToRemoveAroundVP=$3
 
 # This script will smooth the segToFrag which are output of
@@ -23,7 +23,6 @@ pathWithTableWithGenomes="${gitHubDirectory}/tables/table.txt"
 pathWithBRFiles="${gitHubDirectory}/tables/"
 pathForScripts="${gitHubDirectory}/scripts/"
 pathForTable="${gitHubDirectory}/tables/4CinTable.txt"
-pathWithResultsOf4C="${FourCDirectory}/analysisRodriguezCarballo2020/"
 
 myChr="chr2"
 
@@ -138,7 +137,7 @@ if [ "${SLURM_ARRAY_TASK_ID}" = "${firstIndexWithTheGenome}" ]; then
   fi
 else
   # We wait that the one with the first index prepare the files.
-  sleep 4m
+  sleep 2m
 fi
 
 if [ ! -e ${template} ]; then

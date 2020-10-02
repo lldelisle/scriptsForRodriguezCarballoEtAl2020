@@ -164,7 +164,7 @@ if [ `ls HoxD/ | grep HoxD_output | wc -l` -eq 0 ]; then
 fi
 # Sometimes it cannot go to the end because of way to print float...
 # For example 4Cin will raise:
-# OSError: [Errno 2] No such file or directory: '/scratch/ldelisle/test/4Cin//model_E9_FLB_wt_like_invCS3840_onTDOM//wd/HoxD/HoxD_output_0.3_-0.1_12000/'
+# OSError: [Errno 2] No such file or directory: '/scratch/ldelisle/all4Cin/model_E9_FLB_wt_like_invCS3840_onTDOM/wd/HoxD/HoxD_output_0.3_-0.1_12000/'
 # Whereas you have HoxD_output_0.30000000000000004_-0.1_12000
 uZ=`ls HoxD/ | grep HoxD_output | awk -F "_" '{printf("%.1f",$(NF-2))}'`
 lZ=`ls HoxD/ | grep HoxD_output | awk -F "_" '{printf("%.1f",$(NF-1))}'`
@@ -183,12 +183,11 @@ fi
 cd ${path}
 # We store the matrix of distance in a cool file
 # We use a conda environment with cooler:
-exists=`conda info --envs | awk '$1=="pgt_rc2020"{print}' | wc -l`
+exists=`conda info --envs | awk '$1=="pgt_3.5"{print}' | wc -l`
 if [ $exists -ne 1 ]; then
-  conda env create -f ${pathForScripts}/environment.yml
-  
+  conda env create -n pgt_3.5 pygenometracks=3.5  
 fi
-conda activate pgt_rc2020
+conda activate pgt_3.5
 
 if [ ! -e ${pathForScripts}/4CinToCool.py ]; then
   echo "${pathForScripts}/4CinToCool.py does not exists"

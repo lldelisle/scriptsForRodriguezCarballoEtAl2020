@@ -1,11 +1,11 @@
 pathWithIniFiles=$1
 gitHubDirectory=$2
 FourCinRootDirectory=$3
-FourCDirectory=$4
+pathWithResultsOf4C=$4
 pathForChIP=$5
 
 # Assumes that the bedgraph of 4C are in:
-bedgraph4CDirectory=${FourCDirectory}/analysisRodriguezCarballo2020/toGEO/
+bedgraph4CDirectory=${pathWithResultsOf4C}/toGEO/
 
 heightAnnot=0.3
 heightVP=0.8
@@ -106,6 +106,26 @@ overlay_previous = yes
 show_data_range = false
 " >  ${pathWithIniFiles}/genesAndEnh_oninvTDOM.ini
 
+
+echo "[subTADs]
+file = ${gitHubDirectory}/tables/subTADs.bed
+display = collapsed
+color = none
+border_color = black
+labels = false
+height = ${heightCTCF}
+" > ${pathWithIniFiles}/subTADs.ini
+
+
+echo "[subTADs]
+file = subTADs_oninvTDOM_sorted.bed
+display = collapsed
+color = none
+border_color = black
+labels = false
+height = ${heightCTCF}
+" > ${pathWithIniFiles}/subTADs_oninvTDOM.ini
+
 # Figure 1A:
 output="fig1A"
 nb_bins=2000
@@ -133,8 +153,8 @@ min_value = 0
 overlay_previous = yes
 ">  ${pathWithIniFiles}/${output}.ini
 
-cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
-cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
 
 # Figure 1B:
 output=fig1B
@@ -187,8 +207,8 @@ height = 0.25
 " >>  ${pathWithIniFiles}/${output}.ini
   fi
 done
-cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
-cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
 echo "[hogtog]
 file = Hog_Tog.bed
 title = Hog Tog
@@ -241,7 +261,7 @@ height = ${heightVP}
 labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
 
-      cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
 
       echo "[CS38-40]
 file = ${gitHubDirectory}/tables/CS38-40.bed
@@ -291,7 +311,7 @@ overlay_previous = share-y
 show_data_range = false
 color = #a6a8ab
 " >>  ${pathWithIniFiles}/${output}.ini
-  cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
   echo "[CS38-40]
 file = ${gitHubDirectory}/tables/CS38-40.bed
 display = collapsed
@@ -309,6 +329,7 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
 done
 
 
@@ -347,7 +368,7 @@ labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
     fi
     if [ "$what" = "_wt_like_" ]; then
-      cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
       if [ $i = 4 ]; then
         echo "[E9_FLB_wt_20-28s_ChIP_CTCF]
 file = ${pathForChIP}/E9_FLB_wt_20-28s_ChIP_CTCF.bw
@@ -362,7 +383,7 @@ number_of_bins = ${nb_bins}
 height = 0.25
 " >>  ${pathWithIniFiles}/${output}.ini
       fi
-      cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
       echo "[Bd]
 file = ${gitHubDirectory}/tables/Bd.bed
 display = collapsed
@@ -379,9 +400,12 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+      if [ $i = 4 ]; then
+  cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
+      fi
     else
-      cat CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
-      cat genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
       echo "[Bd]
 file = Bd_oninvTDOM.bed
 display = collapsed
@@ -398,6 +422,9 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+      if [ $i = 4 ]; then
+  cat ${pathWithIniFiles}/subTADs_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+      fi
     fi
   done
   echo "[vlines]
@@ -438,8 +465,8 @@ height = ${heightVP}
 labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
 
-  cat CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
-  cat genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
   echo "[Bd]
 file = Bd_oninvTDOM.bed
 display = collapsed
@@ -457,13 +484,113 @@ height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
 done
+
+cat ${pathWithIniFiles}/subTADs_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+
 echo "[vlines]
 file = ${gitHubDirectory}/tables/invTDOM.bed
 type = vlines
 " >>  ${pathWithIniFiles}/${output}.ini
 
-# Figure S2BC:
-output=figS2BC
+# Figure S2B
+output=figS2B
+mutant="delCS3840"
+echo "[scalebar]
+file_type = scalebar
+height = 0.5
+where = top
+x_center = 75500000
+size = 200000
+
+[spacer]
+height = 0.5
+" >  ${pathWithIniFiles}/${output}.ini
+for vp in Hoxd9 Hoxd4 ELCR2 CS93 CTCF-37141 CS65 CTCF-37154; do
+  for what in "wt" "$mutant"; do
+    if [ $what = "wt" ]; then
+      color="#1c75bc"
+    else
+      color="#be1e2d"
+    fi
+    bdg=`ls ${bedgraph4CDirectory}/E9_FLB_${what}_${vp}*.bedGraph.gz`
+    if [ -z $bdg ]; then
+      echo "Could not find ${bedgraph4CDirectory}/E9_FLB_${what}_${vp}*.bedGraph.gz"
+      exit 1
+    fi
+    bdgname=`basename ${bdg} .bedGraph.gz`
+    echo "[4C-seq_E9_FLB_${what}_${vp}]
+file = ${bdg}
+title = ${bdgname}
+color = ${color}
+alpha = 0.8
+type = line:2
+use_middle = true
+file_type = bedgraph" >>  ${pathWithIniFiles}/${output}.ini
+      if [ $what = "wt" ]; then
+        echo "min_value = 0
+max_value = 20
+height = 4
+" >> ${output}.ini
+      else
+        echo "overlay_previous = share-y
+show_data_range = false
+" >> ${output}.ini
+      fi
+  done
+  echo "[hline]
+file_type = hlines
+y_values = 0
+overlay_previous = share-y
+show_data_range = false
+
+[spacer]
+height = 0.5
+" >> ${output}.ini
+done
+echo "[viewpoints E9_FLB_${mutant}]
+file = E9_FLB_${mutant}_viewpoints.bed
+color = grey
+border_color = grey
+display = collapsed
+height = ${heightVP}
+labels = false
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+
+echo "[CS38-40]
+file = ${gitHubDirectory}/tables/CS38-40.bed
+display = collapsed
+overlay_previous = yes
+color = none
+
+[spacer]
+height = 0.2
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+echo "[CS38-40]
+file = ${gitHubDirectory}/tables/CS38-40.bed
+display = collapsed
+overlay_previous = yes
+color = none
+
+[hogtog]
+file = Hog_Tog.bed
+title = Hog Tog
+color = black
+labels = false
+fontsize = 8
+display = collapsed
+style = tssarrow
+height = ${heightAnnot}
+file_type = bed
+" >>  ${pathWithIniFiles}/${output}.ini
+cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
+
+
+# Figure S3AB:
+output=figS3AB
 nbClusters=(2 3)
 i=0
 echo "" >  ${pathWithIniFiles}/${output}.ini
@@ -497,7 +624,7 @@ height = ${heightVP}
 labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
 
-    cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+    cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
 
     echo "[CS38-40]
 file = ${gitHubDirectory}/tables/CS38-40.bed
@@ -510,7 +637,7 @@ height = 0.2
 " >>  ${pathWithIniFiles}/${output}.ini
   done
 
-  cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
   echo "[CS38-40]
 file = ${gitHubDirectory}/tables/CS38-40.bed
 display = collapsed
@@ -528,6 +655,7 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
 i=$((i+1))
 done
 echo "[vlines]
@@ -535,8 +663,8 @@ file = ${gitHubDirectory}/tables/invTDOM.bed
 type = vlines
 " >>  ${pathWithIniFiles}/${output}.ini
 
-# Figure S3BC:
-output=figS3BC
+# Figure S4BC:
+output=figS4BC
 echo "" >  ${pathWithIniFiles}/${output}.ini
 for what in "wt" "delCTCFs"; do
   echo "[scalebar]
@@ -568,7 +696,7 @@ height = ${heightVP}
 labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
 
-    cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+    cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
 
     echo "[CS38-40]
 file = ${gitHubDirectory}/tables/CS38-40.bed
@@ -581,7 +709,7 @@ height = 0.2
 " >>  ${pathWithIniFiles}/${output}.ini
   done
 
-  cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
   echo "[CS38-40]
 file = ${gitHubDirectory}/tables/CS38-40.bed
 display = collapsed
@@ -599,11 +727,108 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
 done
 
+# Figure S5B
+output=figS5B
+mutant="invCS3840"
+echo "[scalebar]
+file_type = scalebar
+height = 0.5
+where = top
+x_center = 75500000
+size = 200000
 
-# Figure S5
-output=figS5
+[spacer]
+height = 0.5
+" >  ${pathWithIniFiles}/${output}.ini
+for vp in Hoxd13 Hoxd9 Hoxd4 ELCR2 CS40 CS93 CTCF-37141 CS65 CTCF-37154; do
+  for what in "wt" "$mutant"; do
+    if [ $what = "wt" ]; then
+      color="#1c75bc"
+    else
+      color="#be1e2d"
+    fi
+    bdg=`ls ${bedgraph4CDirectory}/E9_FLB_${what}_${vp}*.bedGraph.gz`
+    if [ -z $bdg ]; then
+      echo "Could not find ${bedgraph4CDirectory}/E9_FLB_${what}_${vp}*.bedGraph.gz"
+      exit 1
+    fi
+    bdgname=`basename ${bdg} .bedGraph.gz`
+    echo "[4C-seq_E9_FLB_${what}_${vp}]
+file = ${bdg}
+title = ${bdgname}
+color = ${color}
+alpha = 0.8
+type = line:2
+use_middle = true
+file_type = bedgraph" >>  ${pathWithIniFiles}/${output}.ini
+      if [ $what = "wt" ]; then
+        echo "min_value = 0
+max_value = 20
+height = 4
+" >> ${output}.ini
+      else
+        echo "overlay_previous = share-y
+show_data_range = false
+" >> ${output}.ini
+      fi
+  done
+  echo "[hline]
+file_type = hlines
+y_values = 0
+overlay_previous = share-y
+show_data_range = false
+
+[spacer]
+height = 0.5
+" >> ${output}.ini
+done
+echo "[viewpoints E9_FLB_${mutant}]
+file = E9_FLB_${mutant}_viewpoints.bed
+color = grey
+border_color = grey
+display = collapsed
+height = ${heightVP}
+labels = false
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+
+echo "[CS38-40]
+file = ${gitHubDirectory}/tables/CS38-40.bed
+display = collapsed
+overlay_previous = yes
+color = none
+
+[spacer]
+height = 0.2
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+echo "[CS38-40]
+file = ${gitHubDirectory}/tables/CS38-40.bed
+display = collapsed
+overlay_previous = yes
+color = none
+
+[hogtog]
+file = Hog_Tog.bed
+title = Hog Tog
+color = black
+labels = false
+fontsize = 8
+display = collapsed
+style = tssarrow
+height = ${heightAnnot}
+file_type = bed
+" >>  ${pathWithIniFiles}/${output}.ini
+cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
+
+
+# Figure S6AB
+output=figS6AB
 echo "[scalebar]
 file_type = scalebar
 height = 0.5
@@ -635,13 +860,13 @@ height = ${heightVP}
 labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
     if [ "$what" = "wt" ]; then
-      cat CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
     else
-      cat CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+      cat ${pathWithIniFiles}/CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
     fi
   done
   if [ "$what" = "wt_like_invTDOM" ]; then
-    cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+    cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
     echo "[Bd]
 file = ${gitHubDirectory}/tables/Bd.bed
 display = collapsed
@@ -659,8 +884,9 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
   else
-    cat genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+    cat ${pathWithIniFiles}/genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
     echo "[Bd]
 file = Bd_oninvTDOM.bed
 display = collapsed
@@ -678,49 +904,87 @@ style = tssarrow
 height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/subTADs_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
   fi
 done
-# 4C part:
-for what in "wt" "invTDOM"; do
-  if [ $what = "wt" ]; then
-    color="#1c75bc"
-  else
-    color="#be1e2d"
-  fi
-  hoxd11Bdg=`ls ${bedgraph4CDirectory}/E9_FLB_${what}_Hoxd11*.bedGraph.gz | grep wt`
-  if [ -z $hoxd11Bdg ]; then
-    echo "Could not find ${bedgraph4CDirectory}/E9_FLB_${what}_Hoxd11*.bedGraph.gz with wt in the name"
-    exit 1
-  fi
-  hoxd11name=`basename ${hoxd11Bdg} .bedGraph.gz`
-  echo "[4C-seq_E9_FLB_${what}_Hoxd11]
-file = ${hoxd11Bdg}
-title = ${hoxd11name}
+echo "[vlines]
+file = ${gitHubDirectory}/tables/invTDOM.bed
+type = vlines
+" >>  ${pathWithIniFiles}/${output}.ini
+
+
+# Figure S6C
+output=figS6C
+mutant="invTDOM"
+echo "[scalebar]
+file_type = scalebar
+height = 0.5
+where = top
+x_center = 75500000
+size = 200000
+
+[spacer]
+height = 0.5
+" >  ${pathWithIniFiles}/${output}.ini
+for vp in Hoxd11 Hoxd9 Hoxd4 ELCR2 CS40 CS93 CTCF-37141 CS65 CTCF-37154; do
+  for what in "wt" "$mutant"; do
+    if [ $what = "wt" ]; then
+      color="#1c75bc"
+    else
+      color="#be1e2d"
+    fi
+    bdg=`ls ${bedgraph4CDirectory}/E9_FLB_${what}_*${vp}*.bedGraph.gz | grep wt`
+    if [ -z $bdg ]; then
+      echo "Could not find ${bedgraph4CDirectory}/E9_FLB_${what}_*${vp}*.bedGraph.gz with wt in the name"
+      exit 1
+    fi
+    bdgname=`basename ${bdg} .bedGraph.gz`
+    echo "[4C-seq_E9_FLB_${what}_${vp}]
+file = ${bdg}
+title = ${bdgname}
 color = ${color}
 alpha = 0.8
 type = line:2
 use_middle = true
-file_type = bedgraph
-min_value = 0
-max_value = 30
-height = 2
-
-[hline]
+file_type = bedgraph" >>  ${pathWithIniFiles}/${output}.ini
+      if [ $what = "wt" ]; then
+        echo "min_value = 0
+max_value = 20
+height = 4
+" >> ${output}.ini
+      else
+        echo "overlay_previous = share-y
+show_data_range = false
+" >> ${output}.ini
+      fi
+  done
+  echo "[hline]
 file_type = hlines
 y_values = 0
 overlay_previous = share-y
 show_data_range = false
-color = #a6a8ab
-" >>  ${pathWithIniFiles}/${output}.ini
-done
-cat genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
-echo "[Bd]
-file = ${gitHubDirectory}/tables/Bd.bed
-display = collapsed
-overlay_previous = yes
-color = none
 
-[hogtog]
+[spacer]
+height = 0.5
+" >> ${output}.ini
+done
+echo "[viewpoints E9_FLB_${mutant}]
+file = E9_FLB_${mutant}_viewpoints.bed
+color = grey
+border_color = grey
+display = collapsed
+height = ${heightVP}
+labels = false
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/CTCF_peaks_colored.ini >>  ${pathWithIniFiles}/${output}.ini
+
+echo "[spacer]
+height = 0.2
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/genesAndEnh.ini >>  ${pathWithIniFiles}/${output}.ini
+echo "[hogtog]
 file = Hog_Tog.bed
 title = Hog Tog
 color = black
@@ -730,15 +994,17 @@ display = collapsed
 style = tssarrow
 height = ${heightAnnot}
 file_type = bed
+" >>  ${pathWithIniFiles}/${output}.ini
 
-[vlines]
+cat ${pathWithIniFiles}/subTADs.ini >>  ${pathWithIniFiles}/${output}.ini
+echo "[vlines]
 file = ${gitHubDirectory}/tables/invTDOM.bed
 type = vlines
 " >>  ${pathWithIniFiles}/${output}.ini
 
 
-# Figure S6
-output=figS6
+# Figure S7A
+output=figS7A
 echo "[scalebar]
 file_type = scalebar
 height = 0.5
@@ -774,10 +1040,10 @@ height = ${heightVP}
 labels = false
 " >>  ${pathWithIniFiles}/${output}.ini
 
-    cat CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+    cat ${pathWithIniFiles}/CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
   done
 
-  cat genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+  cat ${pathWithIniFiles}/genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
   echo "[Bd]
 file = Bd_oninvTDOM.bed
 display = collapsed
@@ -796,38 +1062,84 @@ height = ${heightAnnot}
 file_type = bed
 " >>  ${pathWithIniFiles}/${output}.ini
 done
+
+cat ${pathWithIniFiles}/subTADs_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
 echo "[vlines]
 file = ${gitHubDirectory}/tables/invTDOM.bed
 type = vlines
 " >>  ${pathWithIniFiles}/${output}.ini
-# 4C:
-for what in "invTDOM" "invTDOMdelBd"; do
-  if [ $what = "invTDOM" ]; then
-    color="#1c75bc"
-  else
-    color="#be1e2d"
-  fi
-  echo "[4C-seq_E12_PFL_${what}_Hoxd11]
-file = ${bedgraph4CDirectory}/E12_PFL_${what}_Hoxd11.bedGraph.gz
-title = E12_PFL_${what}_Hoxd11
+
+
+# Figure S7B
+output=figS7B
+echo "[scalebar]
+file_type = scalebar
+height = 0.5
+where = top
+x_center = 75500000
+size = 200000
+
+[spacer]
+height = 0.5
+" >  ${pathWithIniFiles}/${output}.ini
+for vp in Hoxd11 Hoxd9 Hoxd4 CTCF-37157 CTCF-37141 CS38; do
+  for what in "invTDOM" "invTDOMdelBd"; do
+    if [ $what = "invTDOM" ]; then
+      color="#1c75bc"
+    else
+      color="#be1e2d"
+    fi
+    bdg=`ls ${bedgraph4CDirectory}/E12_PFL_${what}_${vp}*.bedGraph.gz`
+    if [ -z $bdg ]; then
+      echo "Could not find ${bedgraph4CDirectory}/E9_FLB_${what}_${vp}*.bedGraph.gz"
+      exit 1
+    fi
+    bdgname=`basename ${bdg} .bedGraph.gz`
+    echo "[4C-seq_E12_PFL_${what}_${vp}]
+file = ${bdg}
+title = ${bdgname}
 color = ${color}
 alpha = 0.8
 type = line:2
 use_middle = true
 file_type = bedgraph" >>  ${pathWithIniFiles}/${output}.ini
-  if [ $what = "invTDOM" ]; then
-    echo "min_value = 0
+      if [ $what = "invTDOM" ]; then
+        echo "min_value = 0
 max_value = 20
 height = 4
 " >> ${output}.ini
-  else
-    echo "overlay_previous = share-y
+      else
+        echo "overlay_previous = share-y
 show_data_range = false
 " >> ${output}.ini
-  fi
+      fi
+  done
+  echo "[hline]
+file_type = hlines
+y_values = 0
+overlay_previous = share-y
+show_data_range = false
+
+[spacer]
+height = 0.5
+" >> ${output}.ini
 done
-cat CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
-cat genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+echo "[viewpoints E12_PFL_invTDOM]
+file = E12_PFL_invTDOM_viewpoints.bed
+color = grey
+border_color = grey
+display = collapsed
+height = ${heightVP}
+labels = false
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/CTCF_peaks_colored_invTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+
+echo "[spacer]
+height = 0.2
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/genesAndEnh_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
 echo "[Bd]
 file = Bd_oninvTDOM.bed
 display = collapsed
@@ -844,4 +1156,10 @@ display = collapsed
 style = tssarrow
 height = ${heightAnnot}
 file_type = bed
+" >>  ${pathWithIniFiles}/${output}.ini
+
+cat ${pathWithIniFiles}/subTADs_oninvTDOM.ini >>  ${pathWithIniFiles}/${output}.ini
+echo "[vlines]
+file = ${gitHubDirectory}/tables/invTDOM.bed
+type = vlines
 " >>  ${pathWithIniFiles}/${output}.ini

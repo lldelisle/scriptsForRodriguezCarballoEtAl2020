@@ -13,7 +13,7 @@
 
 gitHubDirectory=$1
 mutantGenomeDirectory=$2
-FourCDirectory=$3
+pathWithResultsOf4C=$3
 FourCinRootDirectory=$4
 pathForChIP=$5
 
@@ -75,11 +75,11 @@ cat genes_around_TDOM.gtf | awk -F "\t" '$9~/protein_coding/ || $9~/Haglr/ || $9
 
 cat genes_around_TDOM.gtf | awk -F "\t" '$9~/Gm13652/ || $9~/2600014E21Rik/ {print}' > Hog_Tog.gtf
 
-exists=`conda info --envs | awk '$1=="pgt_rc2020"{print}' | wc -l`
+exists=`conda info --envs | awk '$1=="pgt_3.5"{print}' | wc -l`
 if [ $exists -ne 1 ]; then
-  conda env create -f ${pathForScripts}/environment.yml
+  conda env create -n pgt_3.5 pygenometracks=3.5  
 fi
-conda activate pgt_rc2020
+conda activate pgt_3.5
 
 # Convert gtf to bed
 python ${pathForScripts}/fromgtfTobed12.py --output genes_around_TDOM.bed --mergeTranscriptsAndOverlappingExons genes_around_TDOM.gtf
@@ -117,6 +117,8 @@ bash ${pathForScripts}/shiftBedWithMultipleBR.sh ${brFiles} ${gitHubDirectory}/t
 bash ${pathForScripts}/shiftBedWithMultipleBR.sh ${brFiles} ${gitHubDirectory}/tables/Bd.bed Bd_oninvTDOM.bed 0
 bash ${pathForScripts}/shiftBedWithMultipleBR.sh ${brFiles} ${gitHubDirectory}/tables/annotations_enhancers_figure.bed annotations_enhancers_figure_oninvTDOM.bed 0
 sort -k1,1 -k2,2n annotations_enhancers_figure_oninvTDOM.bed > annotations_enhancers_figure_oninvTDOM_sorted.bed
+bash ${pathForScripts}/shiftBedWithMultipleBR.sh ${brFiles} ${gitHubDirectory}/tables/subTADs.bed subTADs_oninvTDOM.bed 0
+sort -k1,1 -k2,2n subTADs_oninvTDOM.bed > subTADs_oninvTDOM_sorted.bed
 if [ ! -e ${pathForScripts}/shiftGtfWithMultipleBR.sh ]; then
   echo "${pathForScripts}/shiftGtfWithMultipleBR.sh does not exists"
   exit 1
@@ -157,7 +159,7 @@ done < <(sed 1d ${gitHubDirectory}/tables/4CinTable.txt)
 
 
 # Generate all ini files using the paths
-bash ${pathForScripts}/generateAllIni.sh ${pathWithIniFiles} ${gitHubDirectory} ${FourCinRootDirectory} ${FourCDirectory} ${pathForChIP}
+bash ${pathForScripts}/generateAllIni.sh ${pathWithIniFiles} ${gitHubDirectory} ${FourCinRootDirectory} ${pathWithResultsOf4C} ${pathForChIP}
 
 # Plot
 
@@ -167,40 +169,98 @@ pgt --tracks ${pathWithIniFiles}/fig1A.ini --region chr2:73700000-75800000 -o fi
 # Figure 1B
 pgt --tracks ${pathWithIniFiles}/fig1B.ini --region chr2:74400001-75800000 -o fig1B.pdf
 
-# Figure 2
-pgt --tracks ${pathWithIniFiles}/fig2.ini --region chr2:74401941-75800320 -o fig2.pdf
-
-# Figure 3
-pgt --tracks ${pathWithIniFiles}/fig3.ini --region chr2:74401941-75800320 -o fig3.pdf
-
-# Figure 4
-pgt --tracks ${pathWithIniFiles}/fig4.ini --region chr2:74401941-75800320 -o fig4.pdf
-
-# Figure 5A
-pgt --tracks ${pathWithIniFiles}/fig5A.ini --region chr2:74401941-75800320 -o fig5A.pdf
-
-# Figure 5C
-pgt --tracks ${pathWithIniFiles}/fig5C.ini --region chr2:74401941-75800320 -o fig5C.pdf
+for i in 2 3 4 5A 5C S2B S3AB S4BC S5B S6AB S6C S7A S7B; do
+  pgt --tracks ${pathWithIniFiles}/fig${i}.ini --region chr2:74401941-75800320 -o fig${i}.pdf
+done
 
 # Figure S2A
-# UCSC chr2-75131700-75156173
+# UCSC chr2:75131700-75156173
 
+# Figure S3C
+# UCSC
 
-# Figure S2BC
-pgt --tracks ${pathWithIniFiles}/figS2BC.ini --region chr2:74401941-75800320 -o figS2BC.pdf
+# Figure S5A
+# UCSC chr2:75131700-75156173
 
-# Figure S2D
-# UCSC chr2:74401941-75800320
+# For the quantification:
+# Peaks need to be called from E9_wt_Hoxd11, Hoxd9 and Hoxd4
+mkdir -p callPeaks
+for hoxd in 4 9 11; do
+  ln -s ${pathWithResultsOf4C}/toGEO/segToFrag_E9_FLB_wt_Hoxd${hoxd}.bw callPeaks/
+done
 
-# Figure S3BC
-pgt --tracks ${pathWithIniFiles}/figS3BC.ini --region chr2:74401941-75800320 -o figS3BC.pdf
+# Prepare a config file for peak calling
+template=mm10_NlaIIIDpnII.bedGraph.gz
+echo "###Required parameters
+coordinatesToPlot <- c(\"chr2:74401941-75800320\")
+pathForFunctions4C <- \"${pathForScripts}/4C_functions.R\"
+pathForVPNameAndPos <- \"$gitHubDirectory/tables/mm10_viewpointPos_2col.txt\"
+folderWithInputs <- \"$PWD/callPeaks/\"
 
-# Figure S4A
-# UCSC chr2-75131700-75156173
+###Optional parameters
+#Output location
+outputPath <- \"$PWD/callPeaks/plots\"
+#Output format
+usePng <- F #If you want to use png replace F by T
+pngRes <- 96 #This is the resolution of the png file.
+#Additional features on the plot
+plotModel <- T #Do you want to see a blue line corresponding to the model to which the score will be compared.
 
+##Analysis parameters:
+wins <- 1e6 #Relatively to the viewpoint to which extend do you want to look for peaks
+qWrValues <- 0.6 # Parameter on the ratio over background
+qWdValues <- 1.5 # Parameter on the difference with background
+nbsOfFragmentPerWindow <- 11 # smoothing window
 
-# Figure S5
-pgt --tracks ${pathWithIniFiles}/figS5.ini --region chr2:74401941-75800320 -o figS5.pdf
+### 4C PARAMETERS ###
+template <- \"${template}\"
+" > configFile_for_peak_calling.R
 
-# Figure S6
-pgt --tracks ${pathWithIniFiles}/figS6.ini --region chr2:74401941-75800320 -o figS6.pdf
+# Generate the template
+possibleT=`ls ${pathWithResultsOf4C}/res_files_4Cseq_Wt*/normalised_scorePerFeature_*.bedGraph.gz | awk 'NR==1{print $1}'`
+if [ ! -z ${possibleT} ]; then
+  zcat ${possibleT} | awk 'NF==4{print $1"\t"$2"\t"$3}' | gzip > ${template}
+else
+  echo "There is no file ${genome}/normalised_scorePerFeature_*.bedGraph.gz"
+  exit 1
+fi
+
+if [ ! -e ${pathForScripts}/callPeaks.R ]; then
+  echo "${pathForScripts}/callPeaks.R does not exists"
+  exit 1
+fi
+
+Rscript ${pathForScripts}/callPeaks.R configFile_for_peak_calling.R
+
+# First the CS93, CS65, CS39
+cat ${gitHubDirectory}/tables/annotations_enhancers_figure.bed | grep -P "CS93|CS65|CS39" > enhancers.bed
+peakCalling_file=callPeaks/E9_FLB_wt_Hoxd11.inputMat_74685562_1_11_1.5_0.6_peaks.bed
+bedtools intersect -a $peakCalling_file -b enhancers.bed -wa -wb | cut -f 1-3,7 > quantification.bed
+
+# Then ELCR2
+cat ${gitHubDirectory}/tables/annotations_enhancers_figure.bed | grep -w "ELCR2" > enhancers.bed
+peakCalling_file=callPeaks/E9_FLB_wt_Hoxd9.inputMat_74697247_1_11_1.5_0.6_peaks.bed
+bedtools intersect -a $peakCalling_file -b enhancers.bed -wa -wb | cut -f 1-3,7 >> quantification.bed
+
+# Then ELCR3
+cat ${gitHubDirectory}/tables/annotations_enhancers_figure.bed | grep -w "ELCR3" > enhancers.bed
+peakCalling_file=callPeaks/E9_FLB_wt_Hoxd4.inputMat_74723268_1_11_1.5_0.6_peaks.bed
+bedtools intersect -a $peakCalling_file -b enhancers.bed -wa -wb | cut -f 1-3,7 >> quantification.bed
+
+# For HoxD: From the end of Prox to the TSS of Hoxd1:
+left_border=`cat ${gitHubDirectory}/tables/annotations_enhancers_figure.bed | grep Prox | cut -f 3`
+cat genes_around_TDOM_customized.bed | awk -v OFS="\t" -v lb=$left_border '$4=="Hoxd1"{$2=lb;print $1,$2,$3,"HoxD"}' >> quantification.bed
+
+# For TDOM we use the subTADs
+cat ${gitHubDirectory}/tables/subTADs.bed | awk -v OFS="\t" 'NR==2{start=$2}END{$2=start;print $1,$2,$3,"TDOM"}' >> quantification.bed
+
+# We need to add the same for invTDOM:
+bash ${pathForScripts}/shiftBedWithMultipleBR.sh ${brFiles} quantification.bed quantification_oninvTDOM.bed 0
+cat quantification_oninvTDOM.bed | awk -v OFS="\t" '{$4=$4"_oninvTDOM";print}' > all_quantification.bed
+cat quantification.bed >> all_quantification.bed
+
+# We launch the python script which will compute statistics on 4C
+# Quantification on virtual 4C
+# Quantification on 4C
+python ${gitHubDirectory}/scripts/stats.py ${gitHubDirectory}/tables ${FourCinRootDirectory} ${pathWithResultsOf4C}/toGEO/ \
+  all_quantification.bed ${gitHubDirectory}/tables/quantifications_4C_table.txt stats_4c.txt quantif_4c.txt
