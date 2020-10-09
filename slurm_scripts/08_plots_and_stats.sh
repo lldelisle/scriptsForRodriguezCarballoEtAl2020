@@ -263,4 +263,4 @@ cat quantification.bed >> all_quantification.bed
 # Quantification on virtual 4C
 # Quantification on 4C
 python ${gitHubDirectory}/scripts/stats.py ${gitHubDirectory}/tables ${FourCinRootDirectory} ${pathWithResultsOf4C}/toGEO/ \
-  all_quantification.bed ${gitHubDirectory}/tables/quantifications_4C_table.txt stats_4c.txt quantif_4c.txt
+  all_quantification.bed ${gitHubDirectory}/tables/quantifications_4C_table.txt stats_4c.txt quantif_4c.txt > quantif_vHiC.txt

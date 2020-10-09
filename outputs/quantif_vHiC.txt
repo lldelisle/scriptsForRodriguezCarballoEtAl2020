@@ -1,0 +1,54 @@
+
+fig2
+subTAD1(noCS38-40) vs subTAD1(noCS38-40)
+[2035.875, 2280.0]
+Fold-change of mean: 1.1199115859274267
+MannwhitneyuResult(statistic=112076.0, pvalue=0.007694827558320627)
+
+fig2
+subTAD1(noCS38-40) vs subTAD2(noCS38-40)
+[5408.842197035746, 4487.066259808195]
+Fold-change of mean: 0.829579805871815
+MannwhitneyuResult(statistic=424773.0, pvalue=3.684160206796384e-49)
+
+fig2
+subTAD2(noCS38-40) vs subTAD2(noCS38-40)
+[3241.162162162162, 3653.4779516358462]
+Fold-change of mean: 1.1272123296659216
+MannwhitneyuResult(statistic=212045.0, pvalue=2.0529039500161745e-06)
+
+figS4
+subTAD1(noCS38-40) vs subTAD1(noCS38-40)
+[2500.5383064516127, 2847.532258064516]
+Fold-change of mean: 1.1387677008257093
+MannwhitneyuResult(statistic=106005.0, pvalue=8.202527884698362e-05)
+
+figS4
+subTAD1(noCS38-40) vs subTAD2(noCS38-40)
+[6276.1839581517, 4320.732345248474]
+Fold-change of mean: 0.6884330309720408
+MannwhitneyuResult(statistic=342204.0, pvalue=2.1893574476230707e-88)
+
+figS4
+subTAD2(noCS38-40) vs subTAD2(noCS38-40)
+[3061.3911806543388, 3612.924608819346]
+Fold-change of mean: 1.1801577765201254
+MannwhitneyuResult(statistic=208972.0, pvalue=2.726102615344466e-07)
+
+fig3
+subTAD1(noCS38-40) vs subTAD1(noCS38-40)
+[2006.155241935484, 2540.5806451612902]
+Fold-change of mean: 1.2663928454062245
+MannwhitneyuResult(statistic=99658.5, pvalue=1.1362580630251966e-07)
+
+fig3
+subTAD1(noCS38-40) vs subTAD2(noCS38-40)
+[5547.80993897123, 7719.025283347864]
+Fold-change of mean: 1.3913644065426038
+MannwhitneyuResult(statistic=226188.5, pvalue=2.45457685583692e-163)
+
+fig3
+subTAD2(noCS38-40) vs subTAD2(noCS38-40)
+[3383.6358463726883, 3453.4238975817925]
+Fold-change of mean: 1.0206251660573693
+MannwhitneyuResult(statistic=237571.0, pvalue=0.10520865434481513)

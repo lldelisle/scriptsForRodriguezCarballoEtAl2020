@@ -51,7 +51,12 @@ for fig in pairs.keys():
             print("\n" + fig)
             print(f"{subTADs_names[i]} vs {subTADs_names[j]}")
             # Data is loaded from cool file
-            data = [c.matrix(balance=False).fetch(subTADs[subTADs_names[i]], subTADs[subTADs_names[j]]).flatten() for c in both_cool]
+            data = [c.matrix(balance=False).fetch(subTADs[subTADs_names[i]], subTADs[subTADs_names[j]]) for c in both_cool]
+            # When i and j are identical only the upper matrix is kept
+            if i == j:
+                data = [d[np.triu_indices(d.shape[0])] for d in data]
+            else:
+                data = [d.flatten() for d in data]
             # Mean distance is plotted
             print([np.mean(d) for d in data])
             # The fold-change in mean
