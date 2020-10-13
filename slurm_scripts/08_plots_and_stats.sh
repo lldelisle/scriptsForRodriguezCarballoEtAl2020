@@ -25,7 +25,6 @@ path="$PWD/"
 pathForScripts="${gitHubDirectory}/scripts/"
 pathWithTableWithGenomes="${gitHubDirectory}/tables/table.txt"
 pathWithBRFiles="${gitHubDirectory}/tables/"
-pathWithIniFiles="${gitHubDirectory}/ini_files/"
 pathForSizes="${mutantGenomeDirectory}/Wt/mm10.fa.fai"
 pathWithIniFiles="${path}/"
 
@@ -52,7 +51,7 @@ bedGraphToBigWig PFL_E12_Wt_CTCF_chr2.bedGraph ${pathForSizes} PFL_E12_Wt_CTCF_c
 
 # Make the bigwig for ChIP if you got the bedgraph from GEO:
 for f in ${pathForChIP}/*.bedGraph.gz; do
-  name=`basename $f .bedGraph.gz | awk '{split($1, a, "_E9"); if(length(a) == 2){print "E9"a[2]}else{print $0}}'`
+  name=`basename $f .bedGraph.gz | awk '{split($1, a, "_E"); if(length(a) == 2){print "E"a[2]}else{print $0}}'`
   if [ ! -e ${pathForChIP}/${name}.bw ]; then
     gunzip -c $f | grep chr2 > temp.bdg
     bedGraphToBigWig temp.bdg ${pathForSizes} ${pathForChIP}/${name}.bw
