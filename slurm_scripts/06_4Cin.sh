@@ -185,7 +185,7 @@ cd ${path}
 # We use a conda environment with cooler:
 exists=`conda info --envs | awk '$1=="pgt_3.5"{print}' | wc -l`
 if [ $exists -ne 1 ]; then
-  conda env create -n pgt_3.5 pygenometracks=3.5  
+  conda create -y -n pgt_3.5 pygenometracks=3.5
 fi
 conda activate pgt_3.5
 
