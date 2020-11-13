@@ -20,21 +20,8 @@ module load sra-toolkit/2.9.6
 
 mkdir -p ${wd}
 cd ${wd}
-# Download previously published demultiplexed fastq
-sra=SRR5855209
-fasterq-dump -o E12_PFL_wt_CS65_r1.fastq ${sra}
 
-for ((i=1;i<=5;i++)); do
-  sra="SRR$((5855184 + ${i}))"
-  fasterq-dump -o E12_PFL_wt_CS38_r${i}.fastq ${sra}
-done
-
-for ((i=1;i<=3;i++)); do
-  sra="SRR$((5855168 + ${i}))"
-  fasterq-dump -o E12_PFL_wt_Hoxd4_r${i}.fastq ${sra}
-done
-
-# Download demultiplexed fastq of this analysis
+# Download demultiplexed fastq
 if [ ! -e ${gitHubDirectory}/tables/sraTable.txt ]; then
   echo "sraTable.txt does not exists"
   exit 1
